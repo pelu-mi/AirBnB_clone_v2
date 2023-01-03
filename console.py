@@ -124,20 +124,21 @@ class HBNBCommand(cmd.Cmd):
             return
         new_instance = HBNBCommand.classes[args_list[0]]()
         for param in args_list[1:]:
-            key_name = param.split("=")[0]
-            value = param.split("=")[1]
-            if "\"" in value:
-                str_value = value.strip('\"')
-                if "_" in str_value:
-                    attr_value = str_value.replace("_", " ")
+            if "=" in param:
+                key_name = param.split("=")[0]
+                value = param.split("=")[1]
+                if "\"" in value:
+                    str_value = value.strip('\"')
+                    if "_" in str_value:
+                        attr_value = str_value.replace("_", " ")
+                    else:
+                        attr_value = str_value
+                elif "." in value:
+                    attr_value = float(value)
                 else:
-                    attr_value = str_value
-            elif "." in value:
-                attr_value = float(value)
-            else:
-                attr_value = int(value)
-            key = "{0}.{1}".format(args_list[0], new_instance.id)
-            setattr(
+                    attr_value = int(value)
+                key = "{0}.{1}".format(args_list[0], new_instance.id)
+                setattr(
                     storage.all()[key],
                     key_name,
                     attr_value
