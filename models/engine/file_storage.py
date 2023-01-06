@@ -12,7 +12,6 @@ class FileStorage:
         """Returns a dictionary of models currently in storage"""
         if cls is None:
             return self.__objects
-        # cls_name = cls.__name__
         objs = {}
         for k in self.__objects.keys():
             if k.split('.')[0] == cls.__name__:
@@ -60,6 +59,6 @@ class FileStorage:
         """ Delete obj from __objects if it's inside it"""
         if obj is None:
             return
-        for k, v in self.all().items():
-            if v == obj:
-                del self.all()[k]
+        obj_key = obj.to_dict()['__class__'] + '.' + obj.id
+        if obj_key in self.__objects.keys():
+            del self.__objects[obj_key]
