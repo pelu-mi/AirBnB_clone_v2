@@ -14,8 +14,8 @@ class BaseModel:
     """A base class for all hbnb models"""
 
     id = Column(String(60), nullable=False, primary_key=True, unique=True)
-    created_at = Column(DATETIME, default=datetime.utcnow(), nullable=False)
-    updated_at = Column(DATETIME, default=datetime.utcnow(), nullable=False)
+    created_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """Instantiates a new model"""
@@ -51,7 +51,7 @@ class BaseModel:
         storage.save()
 
     def to_dict(self):
-        """Convert instance into dict format"""
+        """Convert instance into dict format""
         dictionary = {}
         dictionary.update(self.__dict__)
         dictionary.update({'__class__':
@@ -62,6 +62,15 @@ class BaseModel:
         if '_sa_instance_state' in dictionary.keys():
             del dictionary['_sa_instance_state']
         return dictionary
+        """
+        dct = self.__dict__.copy()
+        dct['__class__'] = self.__class__.__name__
+        for k in dct:
+            if type(dct[k]) is datetime:
+                dct[k] = dct[k].isoformat()
+        if '_sa_instance_state' in dct.keys():
+            del(dct['_sa_instance_state'])
+        return dct
 
     def delete(self):
         """Delete the current instance from storage"""
