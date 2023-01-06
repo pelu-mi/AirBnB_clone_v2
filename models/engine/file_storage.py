@@ -15,7 +15,7 @@ class FileStorage:
         else:
             objs = {}
             for k, v in FileStorage.__objects.items():
-                if v['__class__'] == cls.__name__:
+                if k.split('.')[0] == cls.__name__:
                     objs[k] = v
             return objs
 
