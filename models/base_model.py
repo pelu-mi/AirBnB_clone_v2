@@ -13,7 +13,7 @@ Base = declarative_base()
 class BaseModel:
     """A base class for all hbnb models"""
 
-    id = Column(String(60), primary_key=True)
+    id = Column(String(60), nullable=False, primary_key=True, unique=True)
     created_at = Column(DATETIME, default=datetime.utcnow(), nullable=False)
     updated_at = Column(DATETIME, default=datetime.utcnow(), nullable=False)
 
