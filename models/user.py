@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 """This module defines a class User"""
 from models.base_model import BaseModel, Base
-from models import storage_key
+from models import storage_env
 from sqlalchemy import Column, String
 
 
 class User(BaseModel, Base):
     """This class defines a user by various attributes"""
     __tablename__ = 'users'
-    if storage_key == 'db':
+    if storage_env == 'db':
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
