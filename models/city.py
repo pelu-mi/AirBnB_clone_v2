@@ -11,7 +11,7 @@ class City(BaseModel, Base):
     if storage_env == 'db':
         # For DBStorage
         name = Column(String(128), nullable=False)
-        state_id = Column(String(60), nullable=False, ForeignKey('states.id'))
+        state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
     else:
         name = ''
         state_id = ''
