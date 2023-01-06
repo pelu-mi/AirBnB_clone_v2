@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """ DB Storage Module"""
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
 from models.amenity import Amenity
@@ -28,10 +28,10 @@ class DBStorage:
         PWD = getenv('HBNB_MYSQL_PWD')
         HOST = getenv('HBNB_MYSQL_HOST')
         DB = getenv('HBNB_MYSQL_DB')
-        ENV = getenv('HBNB_ENV')
+        HBNB_ENV = getenv('HBNB_ENV')
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
                         USR, PWD, HOST, DB), pool_pre_ping=True)
-        if ENV == 'test':
+        if HBNB_ENV == 'test':
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
@@ -39,9 +39,9 @@ class DBStorage:
         """
         objs = {}
         if cls is None:
-            for c in classes.values():
-                query = self.__session.query(c).all()
-                for obj in query:
+            for c in classes.keys():
+                db_query = self.__session.query(text(c)).all()
+                for obj in db_query:
                     key = obj.__class__.__name__ + '.' + obj.id
                     objs[key] = obj
         else:
@@ -82,4 +82,4 @@ class DBStorage:
         """
         Base.metadata.create_all(self.__engine)
         Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        self.__session = scoped_session(Session)()
+        self.__session = scoped_session(Session)
