@@ -13,9 +13,10 @@ class FileStorage:
         if cls is None:
             return self.__objects
         else:
+            cls_name = cls.__name__
             objs = {}
             for k in self.__objects.keys():
-                if k.split('.')[0] == cls.__name__:
+                if k.split('.')[0] == cls_name:
                     objs[k] = self.__objects[k]
             return objs
 
