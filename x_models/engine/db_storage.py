@@ -12,8 +12,6 @@ from models.state import State
 from models.user import User
 from os import getenv
 
-if getenv('HBNB_TYPE_STORAGE') == 'db':
-    from models.place import place_amenity
 
 classes = {"User": User, "State": State, "City": City,
            "Amenity": Amenity, "Place": Place, "Review": Review}
@@ -43,11 +41,7 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        '''query on the current db session all cls objects
-        this method must return a dictionary: (like FileStorage)
-        key = <class-name>.<object-id>
-        value = object
-        '''
+        '''query on the current db session all cls objects'''
         dct = {}
         if cls is None:
             for c in classes.values():
