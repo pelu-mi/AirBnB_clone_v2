@@ -4,6 +4,19 @@ from models.base_model import BaseModel, Base
 from models import storage_type
 from sqlalchemy import Column, Integer, Float, String, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.schema import Table
+from models.review import Review
+from models.amenity import Amenity
+
+
+if storage_type == 'db':
+    place_amenity = Table('place_amenity', Base.metadata,
+                    Column('place_id', String(60),
+                           ForeignKey('places.id'), primary_key=True,
+                           nullable=False),
+                    Column('amenity_id', String(60),
+                           ForeignKey('amenities.id'), primary_key=True,
+                           nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -22,6 +35,8 @@ class Place(BaseModel, Base):
         longitude = Column(Float, nullable=True)
         reviews = relationship('Review', backref='place',
                                cascade='all, delete, delete-orphan')
+        amenities = relationship('Amenity', secondary=place_amenity,
+                                 viewonly=False, backref='place_amenities')
     else:
         city_id = ""
         user_id = ""
@@ -38,7 +53,7 @@ class Place(BaseModel, Base):
         @property
         def reviews(self):
             """ Return list of Review objects where
-                review.place_id = current Place.id
+                reviews.place_id = current Place.id
             """
             from models import storage
             revs = []
@@ -47,3 +62,25 @@ class Place(BaseModel, Base):
                 if r.place_id == self.id:
                     revs.append(r)
             return revs
+
+        @property
+        def amenities(self):
+            """ Return list of Amenity objects where
+                amenities.place_id = current Place.id
+            """
+            from models import storage
+            amens = []
+            all_amens = storage.all(Amenity)
+            for a in all_amens.values():
+                if a.id in self.amenity_ids:
+                    amens.append(a)
+            return amens
+
+        @amenities.setter
+        def amenities(self, obj):
+            """ Setter for amenities property
+            """
+            if obj is not None:
+                if isinstance(obj, Amenity):
+                    if obj.id not in self.amenity_ids:
+                        self.amenity_ids.append(obj.id)
