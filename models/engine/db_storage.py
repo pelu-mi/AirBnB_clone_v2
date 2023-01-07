@@ -17,6 +17,7 @@ classes = {
             'City': City, 'Amenity': Amenity, 'Review': Review
           }
 
+
 class DBStorage:
     """ Class defining DB Storage using SQLalchemy"""
     __engine = None

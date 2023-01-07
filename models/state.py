@@ -15,7 +15,7 @@ class State(BaseModel, Base):
         # For DBStorage
         name = Column(String(128), nullable=False)
         cities = relationship('City', backref='state',
-                          cascade='all, delete, delete-orphan')
+                              cascade='all, delete, delete-orphan')
     else:
         # For FileStorage
         name = ''
