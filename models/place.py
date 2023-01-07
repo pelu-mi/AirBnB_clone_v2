@@ -5,6 +5,15 @@ from models import storage_type
 from sqlalchemy import Column, String, Integer, Float, ForeignKey
 
 
+if storage_type == 'db':
+    place_amenity = Table('place_amenity', Base.metadata,
+                          Column('place_id', String(60),
+                                 ForeignKey('places.id'),nullable=False,
+                                 primary_key=True),
+                          Column('amenity_id', String(60),
+                                 ForeignKey('amenities.id'),nullable=False,
+                                 primary_key=True))
+
 class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = 'places'
@@ -42,7 +51,28 @@ class Place(BaseModel, Base):
             from models import storage
             all_revs = storage.all(Review)
             objs = []
-            for rev in all_revs.values():
-                if rev.place_id == self.id:
-                    objs.append(rev)
+            for r in all_revs.values():
+                if r.place_id == self.id:
+                    objs.append(r)
             return objs
+
+        @property
+        def amenities(self):
+            """ Return list of Amenities available in a place
+            """
+            from models import storage
+            all_amens = storage.all(Amenity)
+            objs = []
+            for a in all_amens.values():
+                if a.id in self.amenity_ids:
+                    objs.append(a)
+            return objs
+
+        @amenities.setter
+        def amenities(self, obj):
+            """ Amenities setter
+            """
+            if obj is not None:
+                if isinstance(obj, Amenity):
+                    if obj.id not in self.amenity_ids:
+                        self.amenity_ids.append(obj.id)
