@@ -16,9 +16,9 @@ def do_clean(number=0):
         number = 1
     # Clean locally
     with lcd('versions'):
-        local('e=$( ls -t | wc -l ); while [ $e -gt 1 ]; \
-                do f=$( ls -t | tail -1 ); sudo rm $f; e=$(( $e - 1 )); done')
+        local('e=$( ls -t | wc -l ); while [ $e -gt {} ]; \
+do f=$( ls -t | tail -1 ); sudo rm $f; e=$(( $e - 1 )); done').format(number)
     # Clean server
     with cd('/data/web_static/releases'):
-        sudo('e=$( ls -t | wc -l ); while [ $e -gt 3 ]; \
-                do f=$( ls -t | tail -1 ); rm -r $f; e=$(( $e - 1 )); done')
+        sudo('e=$( ls -t | wc -l ); while [ $e -gt {} ]; \
+do f=$( ls -t | tail -1 ); rm -r $f; e=$(( $e - 1 )); done').format(number)
