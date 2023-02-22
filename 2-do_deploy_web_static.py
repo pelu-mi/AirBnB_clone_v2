@@ -3,7 +3,7 @@
     using the function do_deploy
 """
 
-from fabric.api import env, local, run
+from fabric.api import env, put, sudo
 from datetime import datetime
 from os import path
 
@@ -20,13 +20,17 @@ def do_deploy(archive_path):
         # Slice string
         folder = archive_path[9:-4]
         current = '/data/web_static/current'
+        web_foldr = '/data/web_static/releases/'
         # Commands
-        sudo('mkdir -p /data/web_static/releases/{}'.format(folder))
-        sudo('tar -zxvf /tmp/{}.tgz -C \
-             /data/web_static/releases/{}'.format(folder, folder))
+        sudo('mkdir -p {}{}'.format(web_foldr, folder))
+        sudo('tar -zxvf /tmp/{0}.tgz -C {1}{0}'.format(folder, web_foldr))
+        sudo('mv {0}{1}/web_static/* {0}{1}/'.format(web_foldr, folder))
+        # Delete unneeded files
         sudo('rm /tmp/{}.tgz'.format(folder))
+        sudo('rm -rf {0}{1}/web_static'.format(web_foldr, folder))
         sudo('rm ' + current)
-        sudo('ln -s /data/web_static/releases/{} {}'.format(folder, current))
+        # Create symbolic link to web_static folder
+        sudo('ln -s {}{} {}'.format(web_foldr, folder, current))
         return True
     except Exception as e:
         return False
