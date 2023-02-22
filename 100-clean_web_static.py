@@ -10,7 +10,8 @@ env.hosts = ['3.94.211.137', '54.237.207.59']
 
 
 def do_clean(number=0):
-    """ Clean up and delete out-of-date archives
+    """ Clean up and delete out-of-date archives from the local directory
+        and the web server
     """
     if number < 1:
         number = 1
