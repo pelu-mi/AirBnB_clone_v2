@@ -3,7 +3,7 @@
     using the function deploy and clean using do_clean
 """
 
-from fabric.api import sudo, local
+from fabric.api import sudo, local, env
 from fabric.context_managers import cd, lcd
 
 env.hosts = ['3.94.211.137', '54.237.207.59']
