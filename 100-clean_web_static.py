@@ -5,6 +5,7 @@
 
 from fabric.api import sudo, local, env
 from fabric.context_managers import cd, lcd
+import os
 
 env.hosts = ['3.94.211.137', '54.237.207.59']
 
