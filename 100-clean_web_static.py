@@ -13,12 +13,19 @@ def do_clean(number=0):
     """ Clean up and delete out-of-date archives from the local directory
         and the web server
     """
-    number = 1 if int(number) < 1 else int(number)
+    num = 1 if int(number) < 1 else int(number)
     # Clean locally
-    with lcd('versions'):
-        local('e=$( ls -t | wc -l ); while [ $e -gt {} ]; \
-do f=$( ls -t | tail -1 ); sudo rm $f; e=$(( $e - 1 )); done').format(number)
+    archives = sorted(os.listdir('versions/'))
+    for i in range(num):
+        archives.pop()
+    with lcd('versions/'):
+        for archive in archives:
+            local('rm ./{}'.format(archive))
     # Clean server
-    with cd('/data/web_static/releases'):
-        sudo('e=$( ls -t | wc -l ); while [ $e -gt {} ]; \
-do f=$( ls -t | tail -1 ); rm -r $f; e=$(( $e - 1 )); done').format(number)
+    with cd("/data/web_static/releases"):
+        archives = run('ls -tr').split()
+        archives = [arch for arch in archives if 'web_static_' in arch]
+        for i in range(num):
+            archives.pop()
+        for archive in archives:
+            sudo('rm -rf ./{}'.format(archive))
